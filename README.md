@@ -1,4 +1,4 @@
-**😼 NekoBot | 1.5.0** | ***create by AxellNetwork***
+**😼 NekoBot | 1.6.0** | ***create by AxellNetwork***
 
 ```> Simple WhatsApp bot Using Library Baileys```
 
@@ -66,10 +66,10 @@ module.exports = config
 
 
 ```bash
- git clone https://github.com/AxellNetwork/NekoBot
- cd nekoBot
- npm install
- npm start
+$ git clone https://github.com/AxellNetwork/NekoBot
+$ cd nekoBot
+$ npm install
+$ npm start
 ```
 
 ## ☘️ Example Features

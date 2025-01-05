@@ -81,7 +81,7 @@ class SoundCloud {
                     $(".info > p").each((a, i) => {
                         let name = $(i).find("b").text()
                         let key = $(i).text().trim().replace(name, '').trim()
-                        result[name] = key
+                        result[name.split(":")[0].trim().toLowerCase()] = key
                     })
                     result.thumbnail = $(".info img").attr("src");
                     result.download = $("#ready-group a").attr("href")

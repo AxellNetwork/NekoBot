@@ -1,6 +1,6 @@
 {
   "name": "nekoBot",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "description": "- WhatsApp bot using Library Baileys",
   "main": "index.js",
   "directories": {
