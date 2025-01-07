@@ -29,7 +29,7 @@ class Command {
         } else {
             let data = await Scraper.applemusic.search(text);
             if (data.length === 0) throw "> Music tidak di temukan"
-            let cap = "*– 乂 Apple Music*\n> Pilih lagu yang ingin kamu download !"
+            let cap = "*– 乂 Apple Music - Search*\n> Pilih lagu yang ingin kamu download !\n\n"
             for (let i of data) {
                 cap += `> *- Title :* ${i.title}\n`
                 cap += `> *- Artist :* ${i.artist.name}\n`

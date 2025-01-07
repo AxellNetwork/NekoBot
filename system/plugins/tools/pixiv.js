@@ -21,12 +21,12 @@ class Command {
         let {
             data
         } = await Func.fetchJson(`https://api.lolicon.app/setu/v1?r18=${text.includes("--r18") ? 1 : 0}&keyword=${text.replace("--r18", "").trim()}&limit=20`);
-        if (!data[0].title) throw "> Gambar tidak ditemukan !"
+        if (!data[0]?.title) throw "> Gambar tidak ditemukan !"
         let cap = "*– 乂 Pixiv - Search*\n"
-        cap += `> *- Title :* ${data[0].title}\n`
-        cap += `> *- R18 :* ${data[0].r18 ? "✓" : "x"}\n`
-        cap += `> *- Author :* ${data[0].author}\n`
-        cap += `> *- Tags :* ${data[0].tags.join(", ")}\n`
+        cap += `> *- Title :* ${data[0]?.title}\n`
+        cap += `> *- R18 :* ${data[0]?.r18 ? "✓" : "x"}\n`
+        cap += `> *- Author :* ${data[0]?.author}\n`
+        cap += `> *- Tags :* ${data[0]?.tags.join(", ")}\n`
         m.reply({
             image: {
                 url: data[0].url
