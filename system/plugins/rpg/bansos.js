@@ -49,16 +49,16 @@ module.exports = {
                 url: "https://telegra.ph/file/afcf9a7f4e713591080b5.jpg"
              }, 
              caption: gagalText, 
-             footer: "Nᴇᴋᴏ ʙᴏᴛ | ʙʏ ᴀxᴇʟʟ", 
+             footer: "Yahaha Kalah😂", 
              buttons: [{
                buttonId: ".owner", 
                buttonText: {
-                  displayText: "Mʏ ᴏᴡɴᴇʀ", 
+                  displayText: "GANTENG", 
                }, 
              }], 
              viewOnce: true, 
-             headerType: 6
-            })
+             headerType: 6,
+        })
 
         // Reward calculations
         let moneyReward, coinReward;
@@ -105,15 +105,16 @@ module.exports = {
                 url: "https://telegra.ph/file/d31fcc46b09ce7bf236a7.jpg"
              }, 
              caption: rewardText, 
-             footer: "Nᴇᴋᴏ ʙᴏᴛ | ʙʏ ᴀxᴇʟʟ", 
+             footer: "Horee Menang 🎉", 
              buttons: [{
                buttonId: ".owner", 
                buttonText: {
-                  displayText: "Mʏ ᴏᴡɴᴇʀ", 
+                  displayText: "GANTENG", 
                }, 
              }], 
              viewOnce: true, 
              headerType: 6,
         })
     }
+  }
 }
