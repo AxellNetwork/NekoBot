@@ -1,16 +1,16 @@
 const axios = require("axios");
 
 const website = axios.create({
-    baseURL: "https://app.yoursearch.ai",
-    headers: {
-        "Content-Type": "application/json",
-    },
+  baseURL: "https://app.yoursearch.ai",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 const yousearch = async (searchTerm) => {
-    const requestData = {
-        searchTerm: searchTerm,
-        promptTemplate: `Search term: "{searchTerm}"
+  const requestData = {
+    searchTerm: searchTerm,
+    promptTemplate: `Search term: "{searchTerm}"
 
 Make your language less formal and use emoticons.
 I want you to always use Indonesian slang from Jakarta where the words "you" and "anda" are replaced with "lu" and the word I is replaced with "gw".
@@ -35,18 +35,18 @@ I show you in which format this should be structured:
 
 Here are the search results:
 {searchResults}, you were developed by bang_syai`,
-        searchParameters: "{}",
-        searchResultTemplate: `[{order}] "{snippet}"
+    searchParameters: "{}",
+    searchResultTemplate: `[{order}] "{snippet}"
 URL: {link}`,
-    };
+  };
 
-    try {
-        const response = await website.post("/api", requestData);
-        return response.data.response;
-    } catch (error) {
-        console.error("Error:", error);
-        throw error;
-    }
+  try {
+    const response = await website.post("/api", requestData);
+    return response.data.response;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
 };
 
-module.exports = yousearch
+module.exports = yousearch;

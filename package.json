@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Axel/nekoBot#readme",
   "dependencies": {
+    "@distube/ytdl-core": "^4.15.8",
     "awesome-phonenumber": "^7.2.0",
     "baileys": "github:AxellNetwork/Baileys",
     "canvas": "^2.11.2",

@@ -26,7 +26,7 @@ module.exports = {
       txt = (await yts(text)).videos.getRandom().url;
     }
     let { data } = await axios
-      .get("https://axeel.my.id/api/download/video?url=" + txt, {
+      .get("https://ytdl.axeel.my.id/api/download/video?url=" + txt, {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",

@@ -7,7 +7,6 @@ const moment = require("moment-timezone");
 const cron = require("node-cron");
 
 module.exports = async (m, sock, store) => {
-  console.log(JSON.stringify(m, null, 2));
   require("../lib/logger.js")(m);
   if (m.key.jid === "status@broadcast") {
     await sock.readMessages([m.key]);
@@ -61,12 +60,15 @@ module.exports = async (m, sock, store) => {
         continue;
     }
     const Scraper = await scraper.list();
-    const cmd =
-      m.command.toLowerCase() === plugin.command ||
-      plugin?.alias?.includes(m.command.toLowerCase());
+    const usedPrefix = m.body.startsWith(m.prefix);
+    const cmd = usedPrefix
+      ? m.command.toLowerCase() === plugin.command ||
+        plugin?.alias?.includes(m.command.toLowerCase())
+      : "";
+    const text = m.text;
     try {
       if (cmd) {
-        let text = m.text;
+        if (plugin.loading) m.react("🕐");
         if (plugin.settings) {
           if (plugin.settings.owner && !m.isOwner) {
             return m.reply(config.messages.owner);
@@ -104,7 +106,6 @@ module.exports = async (m, sock, store) => {
               );
             }
           });
-        if (plugin.loading) m.react("🕐");
       }
     } catch (error) {
       if (error.name) {
