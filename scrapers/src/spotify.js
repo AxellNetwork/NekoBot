@@ -11,7 +11,7 @@ async function spotifyCreds() {
             TOKEN_ENDPOINT,
             "grant_type=client_credentials", {
                 headers: {
-                    Authorization: "Basic " + basic
+                    Authorization: "Basic " + basic,
                 },
             },
         );
@@ -22,7 +22,7 @@ async function spotifyCreds() {
     } catch (error) {
         return {
             status: false,
-            msg: "Failed to retrieve Spotify credentials."
+            msg: "Failed to retrieve Spotify credentials.",
         };
     }
 }
@@ -43,7 +43,7 @@ class Spotify {
             const response = await axios.get(
                 `https://api.spotify.com/v1/search?query=${encodeURIComponent(query)}&type=${type}&offset=0&limit=${limit}`, {
                     headers: {
-                        Authorization: "Bearer " + creds.data.access_token
+                        Authorization: "Bearer " + creds.data.access_token,
                     },
                 },
             );
@@ -53,7 +53,7 @@ class Spotify {
                 !response.data[type + "s"].items.length
             ) {
                 return {
-                    msg: "Music not found!"
+                    msg: "Music not found!",
                 };
             }
 
@@ -74,36 +74,69 @@ class Spotify {
 
     download = async function dl(url) {
         try {
-            const response = await axios.get(`https://api.fabdl.com/spotify/get?url=` + url, {
-                headers: {
-                    Accept: "application/json, text/plain, */*",
-                    "Content-Type": "application/json",
-                    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
-                }
-            }).catch(e => e.response);
+            const response = await axios
+                .get(`https://api.fabdl.com/spotify/get?url=` + url, {
+                    headers: {
+                        Accept: "application/json, text/plain, */*",
+                        "Content-Type": "application/json",
+                        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
+                    },
+                })
+                .catch((e) => e.response);
 
             if (!response.data.result) {
                 return {
-                    msg: "Failed to get track info"
+                    msg: "Failed to get track info",
                 };
             }
             const {
                 data
-            } = await axios.get(`https://api.fabdl.com/spotify/mp3-convert-task/${response.data.result.gid}/${response.data.result.id}`).catch(e => e.response);
-            if (!data?.result?.download_url) return {
-                msg: "Link download not found !"
-            }
+            } = await axios
+                .get(
+                    `https://api.fabdl.com/spotify/mp3-convert-task/${response.data.result.gid}/${response.data.result.id}`,
+                )
+                .catch((e) => e.response);
+            if (!data?.result?.download_url)
+                return {
+                    msg: "Link download not found !",
+                };
             return {
                 title: response.data.result.name,
                 duration: toTime(response.data.result.duration_ms),
                 cover: response.data.result.image,
-                download: "https://api.fabdl.com" + data?.result?.download_url
-            }
+                download: "https://api.fabdl.com" + data?.result?.download_url,
+            };
         } catch (error) {
             return {
                 msg: "Error Detected",
-                err: error.message
-            }
+                err: error.message,
+            };
+        }
+    };
+    playlist = async function playlist(url) {
+        try {
+            const id = url.split("/playlist/")[0].trim().split("?si=")[0].trim();
+            const {
+                data
+            } = await axios.get(
+                "https://api.spotifydown.com/trackList/playlist/0F1VNeiZKjtX06yrVSqlbu", {
+                    headers: {
+                        Accept: "*/*",
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "User-Agent": "Mozilla/5.0 (Linux; Android 6.0.1; SM-J500G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36",
+                        Origin: "https://spotifydown.com",
+                        Referer: "https://spotifydown.com/",
+                        "Referrer-Policy": "strict-origin-when-cross-origin",
+                    },
+                },
+            ).catch(e => e.response);
+            if (!data.trackList) return []
+            return data.trackList.map((a) => ({
+                ...a,
+                url: "https://open.spotify.com/track/" + a.id
+            }))
+        } catch (err) {
+            return []
         }
     }
 }

@@ -5,54 +5,50 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 module.exports = {
-    command: "menu",
-    alias: ["menu", "help"],
-    category: ["main"],
-    description: "Menampilkan menu bot",
-    loading: true,
-    async run(m, {
-        sock,
-        plugins,
-        config,
-        Func
-    }) {
-        let data = fs.readFileSync(process.cwd() + "/system/case.js", "utf8");
-        let casePattern = /case\s+"([^"]+)"/g;
-        let matches = data.match(casePattern);
-        if (!matches) return m.reply("Tidak ada case yang ditemukan.");
-        matches = matches.map((match) => match.replace(/case\s+"([^"]+)"/, "$1"));
-        let menu = {};
-        plugins.forEach((item) => {
-            if (item.category && item.command && item.alias && item.description) {
-                item.category.forEach((cat) => {
-                    if (!menu[cat]) {
-                        menu[cat] = {
-                            command: [],
-                        };
-                    }
-                    menu[cat].command.push({
-                        name: item.command,
-                        alias: item.alias,
-                        description: item.description,
-                        settings: item.settings,
-                    });
-                });
-            }
+  command: "menu",
+  alias: ["menu", "help"],
+  category: ["main"],
+  description: "Menampilkan menu bot",
+  loading: true,
+  async run(m, { sock, plugins, config, Func, text }) {
+    let data = fs.readFileSync(process.cwd() + "/system/case.js", "utf8");
+    let casePattern = /case\s+"([^"]+)"/g;
+    let matches = data.match(casePattern);
+    if (!matches) return m.reply("Tidak ada case yang ditemukan.");
+    matches = matches.map((match) => match.replace(/case\s+"([^"]+)"/, "$1"));
+    let menu = {};
+    plugins.forEach((item) => {
+      if (item.category && item.command && item.alias && item.description) {
+        item.category.forEach((cat) => {
+          if (!menu[cat]) {
+            menu[cat] = {
+              command: [],
+            };
+          }
+          menu[cat].command.push({
+            name: item.command,
+            alias: item.alias,
+            description: item.description,
+            settings: item.settings,
+          });
         });
-        let cmd = 0;
-        let alias = 0;
-        let pp = await sock
-            .profilePictureUrl(m.sender, "image")
-            .catch((e) => "https://files.catbox.moe/8getyg.jpg");
-        Object.values(menu).forEach((category) => {
-            cmd += category.command.length;
-            category.command.forEach((command) => {
-                alias += command.alias.length;
-            });
-        });
-        let premium = db.list().user[m.sender].premium.status;
-        let limit = db.list().user[m.sender].limit;
-        let caption = `*🍟 Selamat datang di Dashboard bot*
+      }
+    });
+    let cmd = 0;
+    let alias = 0;
+    let pp = await sock
+      .profilePictureUrl(m.sender, "image")
+      .catch((e) => "https://files.catbox.moe/8getyg.jpg");
+    Object.values(menu).forEach((category) => {
+      cmd += category.command.length;
+      category.command.forEach((command) => {
+        alias += command.alias.length;
+      });
+    });
+    let premium = db.list().user[m.sender].premium.status;
+    let limit = db.list().user[m.sender].limit;
+    if (text === "all") {
+      let caption = `*🍟 Selamat datang di Dashboard bot*
 Nama saya nekoBot - , Berikut list command bot ini
 
 *– 乂 Info User*
@@ -78,26 +74,116 @@ Nama saya nekoBot - , Berikut list command bot ini
 
 ${matches.map((a, i) => `*${i + 1}.* ${m.prefix + a}\n> Fitur sampingan ( Case Fitur )`).join("\n")} 
 `;
-        Object.entries(menu).forEach(([tag, commands]) => {
-            caption += `\n*– 乂 M e n u – ${tag.split("").join(" ").capitalize()}*\n\n`;
-            commands.command.forEach((command, index) => {
-                caption += `*${index + 1}.* ${m.prefix + command.name} ${command.settings?.limit ? "*[L]*" : ""}\n${command.description ? `> ${command.description}\n` : ""}`;
-            });
+      Object.entries(menu).forEach(([tag, commands]) => {
+        caption += `\n*– 乂 M e n u – ${tag.split("").join(" ").capitalize()}*\n\n`;
+        commands.command.forEach((command, index) => {
+          caption += `*${index + 1}.* ${m.prefix + command.name} ${command.settings?.premium ? "*[P]*" : command.settings?.limit ? "*[L]*" : ""}\n${command.description ? `> ${command.description}\n` : ""}`;
         });
-        caption += "\n\n> © Developed by AxellNetwork\n> Powered by @0";
-        m.reply({
-            text: caption,
-            contextInfo: {
-                mentionedJid: sock.parseMention(caption),
-                externalAdReply: {
-                    title: "© NekoBot | Playground",
-                    body: "Better WhatsApp bot",
-                    mediaType: 1,
-                    sourceUrl: "https://whatsapp.com/channel/0029Vb0YWvYJ3jusF2nk9U1P",
-                    thumbnailUrl: "https://files.catbox.moe/yupd7z.jpg",
-                    renderLargerThumbnail: true,
-                },
-            },
-        });
-    },
+      });
+      caption += "\n\n> © Developed by AxellNetwork\n> Powered by @0";
+      m.reply({
+        text: caption,
+        contextInfo: {
+          mentionedJid: sock.parseMention(caption),
+          externalAdReply: {
+            title: "© NekoBot | Playground",
+            body: "Better WhatsApp bot",
+            mediaType: 1,
+            sourceUrl: "https://whatsapp.com/channel/0029Vb0YWvYJ3jusF2nk9U1P",
+            thumbnailUrl: "https://files.catbox.moe/yupd7z.jpg",
+            renderLargerThumbnail: true,
+          },
+        },
+      });
+    } else if (Object.keys(menu).find((a) => a === text.toLowerCase())) {
+      let list = menu[Object.keys(menu).find((a) => a === text.toLowerCase())];
+      let caption = `*🍟 Selamat datang di Dashboard bot*
+Nama saya nekoBot - , Berikut list command bot ini
+
+*– 乂 Info User*
+> *- Nama :* ${m.pushName}
+> *- Tag :* @${m.sender.split("@")[0]}
+> *- Status :* ${m.isOwner ? "Developer bot" : premium ? "Premium" : "Gratisan"}
+> *- Limit :* ${m.isOwner ? "Unlimited" : limit}
+
+*– 乂 Info - Bot*
+> *- Nama :* ${pkg.name}
+> *- Versi :* v${pkg.version}
+> *- Runtime :* ${Func.toDate(process.uptime() * 1000)}
+> *- Prefix :* [ ${m.prefix} ]
+> *- Total fitur :* ${cmd + alias + matches.length}
+> *- Source code :* https://github.com/AxellNetwork/NekoBot
+
+> *- Fitur Limit :* [L]
+> *- Fitur Premium :* [P]
+
+☎️ Jika menemukan bug pada bot ini bisa langsung hubungi owner bot
+
+*– 乂 M e n u - ${text.capitalize().split("").join(" ")}*\n\n`;
+      caption += list.command
+        .map(
+          (a, i) =>
+            `*${i + 1}.* ${m.prefix + a.name} ${a.settings?.premium ? "*[P]*" : a.settings?.limit ? "*[L]*" : ""}\n> ${a.description}`,
+        )
+        .join("\n");
+      caption += "\n\n> © Developed by AxellNetwork\n> Powered by @0";
+      m.reply({
+        text: caption,
+        contextInfo: {
+          mentionedJid: sock.parseMention(caption),
+          externalAdReply: {
+            title: "© NekoBot | Playground",
+            body: "Better WhatsApp bot",
+            mediaType: 1,
+            sourceUrl: "https://whatsapp.com/channel/0029Vb0YWvYJ3jusF2nk9U1P",
+            thumbnailUrl: "https://files.catbox.moe/yupd7z.jpg",
+            renderLargerThumbnail: true,
+          },
+        },
+      });
+    } else {
+      let list = Object.keys(menu);
+      let caption = `*🍟 Selamat datang di Dashboard bot*
+Nama saya nekoBot - , Berikut list command bot ini
+
+*– 乂 Info User*
+> *- Nama :* ${m.pushName}
+> *- Tag :* @${m.sender.split("@")[0]}
+> *- Status :* ${m.isOwner ? "Developer bot" : premium ? "Premium" : "Gratisan"}
+> *- Limit :* ${m.isOwner ? "Unlimited" : limit}
+
+*– 乂 Info - Bot*
+> *- Nama :* ${pkg.name}
+> *- Versi :* v${pkg.version}
+> *- Runtime :* ${Func.toDate(process.uptime() * 1000)}
+> *- Prefix :* [ ${m.prefix} ]
+> *- Total fitur :* ${cmd + alias + matches.length}
+> *- Source code :* https://github.com/AxellNetwork/NekoBot
+
+> *- Fitur Limit :* [L]
+> *- Fitur Premium :* [P]
+
+☎️ Jika menemukan bug pada bot ini bisa langsung hubungi owner bot
+
+*– 乂 L i s t - M e n u*
+> ${m.prefix}menu all
+${list.map((a) => `> ${m.prefix}menu ${a}`).join("\n")}
+
+> © Developed by AxellNetwork\n> Powered by @0`;
+      m.reply({
+        text: caption,
+        contextInfo: {
+          mentionedJid: sock.parseMention(caption),
+          externalAdReply: {
+            title: "© NekoBot | Playground",
+            body: "Better WhatsApp bot",
+            mediaType: 1,
+            sourceUrl: "https://whatsapp.com/channel/0029Vb0YWvYJ3jusF2nk9U1P",
+            thumbnailUrl: "https://files.catbox.moe/yupd7z.jpg",
+            renderLargerThumbnail: true,
+          },
+        },
+      });
+    }
+  },
 };
