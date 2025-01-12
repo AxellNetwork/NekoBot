@@ -86,7 +86,7 @@
     }),
   });
 
-  console.log(chalk.blue.bold("- Hi Welcome to NekoBot !"));
+  console.log(chalk.blue.bold("- Hi Welcome to LinuxBot !"));
   console.log(chalk.white.bold("| Terimakasih telah menggunakan Script ini !"));
   console.log(
     chalk.white.bold(
@@ -96,7 +96,7 @@
   );
   console.log(chalk.white.bold("––––––––––––––––––––"));
 
-  async function system() {
+  async function LinuxBot() {
     const { state, saveCreds } = await useMultiFileAuthState(config.sessions);
     const sock = simple(
       {
@@ -104,7 +104,7 @@
         printQRInTerminal: false,
         auth: state,
         version: [2, 3000, 1017531287],
-        browser: Browsers.ubuntu("Edge"),
+        browser: Browsers.ubuntu("Firefox"),
         getMessage: async (key) => {
           const jid = jidNormalizedUser(key.remoteJid);
           const msg = await store.loadMessage(jid, key.id);
@@ -169,12 +169,12 @@
           sock.logout();
         } else if (reason === DisconnectReason.restartRequired) {
           console.log(chalk.green.bold("Restart Required, Restarting. . ."));
-          system();
+          LinuxBot();
         } else if (reason === DisconnectReason.timedOut) {
           console.log(
             chalk.green.bold("Connection TimedOut, Reconnecting. . ."),
           );
-          system();
+          LinuxBot();
         }
       } else if (connection === "connecting") {
         console.log(chalk.green.bold("Connecting, Please Be Patient. . ."));
@@ -249,7 +249,7 @@
         return msg;
       }
       return {
-        conversation: "NekoBot",
+        conversation: "LinuxBot",
       };
     }
     sock.ev.on("messages.upsert", async (cht) => {
@@ -272,7 +272,7 @@
         return msg;
       }
       return {
-        conversation: "NekoBot",
+        conversation: "LinuxBot",
       };
     }
     sock.ev.on("messages.update", async (chatUpdate) => {
@@ -296,5 +296,5 @@
     });
     return sock;
   }
-  system();
+  LinuxBot();
 })();
