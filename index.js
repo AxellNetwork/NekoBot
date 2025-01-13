@@ -169,7 +169,7 @@
           sock.logout();
         } else if (reason === DisconnectReason.restartRequired) {
           console.log(chalk.green.bold("Restart Required, Restarting. . ."));
-          LinuxBot();
+          system();
         } else if (reason === DisconnectReason.timedOut) {
           console.log(
             chalk.green.bold("Connection TimedOut, Reconnecting. . ."),
