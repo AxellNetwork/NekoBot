@@ -174,7 +174,7 @@
           console.log(
             chalk.green.bold("Connection TimedOut, Reconnecting. . ."),
           );
-          LinuxBot();
+          system();
         }
       } else if (connection === "connecting") {
         console.log(chalk.green.bold("Connecting, Please Be Patient. . ."));
