@@ -86,7 +86,7 @@
     }),
   });
 
-  console.log(chalk.blue.bold("- Hi Welcome to LinuxBot !"));
+  console.log(chalk.blue.bold("- Hi Welcome to NekoBot !"));
   console.log(chalk.white.bold("| Terimakasih telah menggunakan Script ini !"));
   console.log(
     chalk.white.bold(
@@ -96,7 +96,7 @@
   );
   console.log(chalk.white.bold("––––––––––––––––––––"));
 
-  async function LinuxBot() {
+  async function system() {
     const { state, saveCreds } = await useMultiFileAuthState(config.sessions);
     const sock = simple(
       {
@@ -249,7 +249,7 @@
         return msg;
       }
       return {
-        conversation: "LinuxBot",
+        conversation: "NekoBot",
       };
     }
     sock.ev.on("messages.upsert", async (cht) => {
@@ -272,7 +272,7 @@
         return msg;
       }
       return {
-        conversation: "LinuxBot",
+        conversation: "NekoBot",
       };
     }
     sock.ev.on("messages.update", async (chatUpdate) => {
@@ -296,5 +296,5 @@
     });
     return sock;
   }
-  LinuxBot();
+  system();
 })();
