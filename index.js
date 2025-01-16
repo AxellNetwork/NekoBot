@@ -104,7 +104,7 @@
         printQRInTerminal: false,
         auth: state,
         version: [2, 3000, 1017531287],
-        browser: Browsers.ubuntu("Edge"),
+        browser: Browsers.ubuntu("Firefox"),
         getMessage: async (key) => {
           const jid = jidNormalizedUser(key.remoteJid);
           const msg = await store.loadMessage(jid, key.id);
