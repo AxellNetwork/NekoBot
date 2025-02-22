@@ -1,3 +1,23 @@
+async function checkIP() {
+  try {
+    const allowedIPsResponse = await fetch('https://accip.nvlgroup.my.id/api/Axel/ip');
+    const allowedIPs = await allowedIPsResponse.json();
+    const currentIPResponse = await fetch('https://api.ipify.org?format=text');
+    const currentIP = await currentIPResponse.text();
+
+    if (!allowedIPs.includes(currentIP)) {
+      console.log('❌IP Anda tidak terdaftar❌ HUBUNGI wa.me/6282114275683 ! Mematikan server...');
+      process.exit(1);
+    }
+
+    console.log('✅IP Anda terdaftar.');
+  } catch (error) {
+    console.error('Gagal memeriksa IP:', error.message);
+    process.exit(1);
+  }
+}
+
+checkIP();
 (async () => {
   const {
     default: makeWASocket,
