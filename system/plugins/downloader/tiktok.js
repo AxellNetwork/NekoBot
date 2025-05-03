@@ -1,105 +1,46 @@
-let neko = async (
-  m,
-  { sock, Func, Scraper, Uploader, store, text, config },
-) => {
-  if (!text.includes("tiktok"))
-    return m.reply(
-      "❌ *Link TikTok tidak ditemukan! Masukkan link yang valid.*",
-    );
+const axios = require("axios");
 
-  await Scraper.ttsave.video(text).then(async (a) => {
-    const caption = `*– 乂 TikTok - Downloader 🎥*\n`;
-    caption += `> 📛 *Nama:* ${a.nickname}\n`;
-    caption += `> 🧑‍💻 *Username:* ${a.username}\n`;
-    caption += `> 🆔 *Username ID:* ${a.uniqueId}\n`;
-    caption += `> 👁️ *Views:* ${a.stats.plays}\n`;
-    caption += `> ❤️ *Likes:* ${a.stats.likes}\n`;
-    caption += `> 💬 *Komentar:* ${a.stats.comments}\n`;
-    caption += `> 🔄 *Bagikan:* ${a.stats.shares}\n`;
-    caption += `⏤͟͟͞͞╳`;
+module.exports = {
+  command: "tiktok",
+  alias: ["tt", "ttdl", "tiktokdl"],
+  category: ["downloader"],
+  settings: {
+    limit: true,
+  },
+  description: "🎥 Mengunduh video dari TikTok dengan URL!",
+  loading: true,
 
-    sock.sendMessage(
-      m.cht,
-      {
-        image: {
-          url: a.profilePic,
-        },
-        caption,
-      },
-      {
-        quoted: m,
-      },
-    );
+  async run(m, { sock, text }) {
+    if (!text || !/tiktok\.com\/\S+/i.test(text)) {
+      throw (
+        `*– 乂 Cara Penggunaan 🎥*\n\n` +
+        `> *🔗 Masukkan URL TikTok* untuk mengunduh video\n\n` +
+        `*– 乂 Contoh Penggunaan 📋*\n` +
+        `> *${m.prefix + m.command} https://vt.tiktok.com/ZShYgExMW/*`
+      );
+    }
 
-    if (a.dlink.nowm) {
+    try {
+      await m.reply("⏳ Mohon tunggu... Sedang memproses permintaan Anda.");
+
+      const { data } = await axios.get(`https://backend.ness.biz.id/api/downloader/tiktok?url=${encodeURIComponent(text)}`);
+
+      if (!data?.video?.[0]) {
+        throw "> ❌ Gagal mengambil video TikTok. Coba gunakan link yang berbeda.";
+      }
+
+      // Kirim satu pesan video saja dengan caption
       await sock.sendMessage(
         m.cht,
         {
-          video: {
-            url: a.dlink.nowm,
-          },
-          caption,
+          video: { url: data.video[0] },
+          caption: `🎬 *Judul:* ${data.title}\n🎵 *Audio:* ${data.title_audio}`,
         },
-        {
-          quoted: m,
-        },
+        { quoted: m }
       );
-    } else if (a.slides) {
-      for (let i of a.slides) {
-        await sock.sendMessage(
-          m.cht,
-          {
-            image: {
-              url: i.url,
-            },
-            caption,
-          },
-          {
-            quoted: m,
-          },
-        );
-      }
+    } catch (err) {
+      console.error(err);
+      throw "> ❌ Terjadi kesalahan saat memproses video TikTok.";
     }
-  });
-
-  Scraper.ttsave.mp3(text).then(async (u) => {
-    const contextInfo = {
-      mentionedJid: [m.sender],
-      isForwarded: true,
-      forwardingScore: 127,
-      externalAdReply: {
-        title: `${Func.Styles(`${u.songTitle}`)}`,
-        body: `${Func.Styles(`${u.username}`)}`,
-        mediaType: 1,
-        thumbnailUrl: u.coverUrl,
-        sourceUrl: u.audioUrl,
-        renderLargerThumbnail: true,
-      },
-    };
-
-    await sock.sendMessage(
-      m.cht,
-      {
-        audio: {
-          url: u.audioUrl,
-        },
-        mimetype: "audio/mpeg",
-        contextInfo,
-      },
-      {
-        quoted: m,
-      },
-    );
-  });
+  },
 };
-
-neko.command = "tiktok";
-neko.alias = ["tt", "ttdl", "tiktokdl"];
-neko.category = ["downloader"];
-neko.settings = {
-  limit: true,
-};
-neko.description = "📥 Download video atau slide dari TikTok.";
-neko.loading = true;
-
-module.exports = neko;
